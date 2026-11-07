@@ -1,0 +1,17 @@
+{
+  "name": "SIDELINE 26 – Fußballmanager",
+  "short_name": "SIDELINE 26",
+  "description": "Mobiler Fußballmanager mit unbegrenzten Münzen",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#08131f",
+  "theme_color": "#08131f",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
