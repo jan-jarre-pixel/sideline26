@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }catch(e){
       if(restore){try{localStorage.removeItem(storageKey);}catch{};showGate();}
       notice('Anmeldung fehlgeschlagen: '+friendly(e));$('connection').textContent='Zugang fehlgeschlagen';
-    }finally{state.busy=false;}
+    }finally{state.busy=false; if(state.actor&&state.snapshot)render((state.snapshot.rolls||[]).slice().sort((a,b)=>Number(b.id)-Number(a.id)),state.snapshot);}
   }
   async function heartbeat(){
     if(!state.actor)return;
