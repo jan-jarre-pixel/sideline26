@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#191612">
+<title>D&D · Gemeinsamer Spieltisch</title>
+<meta name="description" content="Privater D&D-Live-Spieltisch mit Gruppenübersicht, sicheren Würfeln und Spielleiter-Ansicht">
+<style>
+:root{color-scheme:dark;--bg:#17140f;--panel:#272118;--panel2:#30291e;--text:#f2e9d6;--muted:#b8a68e;--line:#554735;--gold:#d6ad64;--green:#75bb90;--red:#dc8b78}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -25%,#493524 0%,#211b15 45%,var(--bg) 95%);color:var(--text);font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}a{color:var(--gold)}a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.top{background:#17130fda;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;backdrop-filter:blur(12px)}.topin{max-width:1150px;margin:auto;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.brand{font:700 23px/1 Georgia,serif;text-decoration:none;color:var(--text)}.brand span{color:var(--gold)}.topright{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:12px}.quiet-link{color:var(--muted);background:transparent;border:0;padding:4px;text-decoration:none;font:inherit;cursor:pointer}
+.shell{max-width:1150px;padding:20px 16px 60px;margin:auto}.paper{border:1px solid var(--line);background:linear-gradient(160deg,var(--panel),#211b15);border-radius:16px;padding:19px;box-shadow:0 8px 28px #0003;margin-bottom:15px}.login{max-width:500px;margin:8vh auto;padding:30px}.crest{font-size:43px;text-align:center}.login h1{text-align:center}.login>p{text-align:center;color:var(--muted)}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--gold);font-weight:800}.hero{display:flex;justify-content:space-between;gap:15px;align-items:center}.hero h1{font:700 32px/1.15 Georgia,serif;margin:5px 0}.hero p{margin:0 0 4px;color:var(--muted)}.hero-right{display:flex;flex-direction:column;gap:9px;align-items:flex-end}.pill{border:1px solid var(--gold);color:var(--gold);border-radius:20px;padding:5px 11px;font-size:13px;font-weight:700}.live-dot{display:inline-block;border-radius:50%;width:7px;height:7px;background:var(--green)}.columns{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:15px}.section-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:15px}.section-head h2{margin:0;font:700 21px Georgia,serif;color:var(--gold)}.tiny{font-size:12px;color:var(--muted)}.small{font-size:12px;color:var(--muted)}
+label{display:block;color:var(--muted);font-size:12px;font-weight:700;margin:12px 0 5px}input,select,textarea{display:block;width:100%;font:inherit;border:1px solid #66533e;background:#16130f;color:var(--text);border-radius:9px;padding:10px;min-height:43px}textarea{resize:vertical}button{font:inherit;color:var(--text);background:#423427;border:1px solid #766045;border-radius:9px;padding:9px 13px;cursor:pointer;min-height:42px}button:hover{filter:brightness(1.12)}button:disabled{opacity:.5;cursor:not-allowed}.primary{background:linear-gradient(145deg,#caa461,#a17a39);color:#19130b;font-weight:800;border-color:var(--gold)}.danger{border-color:#b76d5c;color:#efb5a7}.wide{width:100%;margin-top:17px}.roll-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}.roll-grid.two{grid-template-columns:1fr 1fr}.buttonbar{display:flex;gap:8px;flex-wrap:wrap;margin:13px 0}.gm-details{border-top:1px solid var(--line);padding-top:12px}.gm-details summary{cursor:pointer;color:var(--gold);font-weight:650}.gm-details button{margin-top:9px}.control>label{margin-top:0}
+.party-list{display:grid;grid-template-columns:1fr 1fr;gap:10px}.party-card{border:1px solid var(--line);background:var(--panel2);padding:12px;border-radius:11px;min-width:0}.pc-top{display:flex;justify-content:space-between;gap:8px;align-items:baseline}.pc-top strong{font-size:15px;overflow-wrap:anywhere}.pc-class{font-size:12px;color:var(--muted);min-height:31px}.hp-track{height:8px;background:#5d342f;border-radius:9px;overflow:hidden;margin:9px 0}.hp-track>span{height:100%;display:block;background:var(--green)}.pc-bottom{display:flex;justify-content:space-between;gap:6px;color:var(--muted);font-size:12px}.online{color:var(--green);font-size:11px}.offline{color:var(--muted);font-size:11px}
+.roll-list{display:flex;flex-direction:column;gap:8px;max-height:440px;overflow-y:auto}.roll-entry{background:var(--panel2);padding:12px 14px;border:1px solid var(--line);border-radius:10px;display:flex;align-items:center;justify-content:space-between;gap:12px}.roll-entry strong{color:var(--text);font-size:14px}.roll-entry .detail{color:var(--muted);font-size:12px}.roll-entry .number{font:800 27px Georgia,serif;color:var(--gold);min-width:36px;text-align:right}.roll-entry.crit .number{color:#fbe29c}.roll-entry.fail .number{color:var(--red)}.roll-entry.secret{border-left:3px solid var(--red)}.result{margin-top:15px;border:1px solid var(--gold);background:#362b1c;text-align:center;padding:15px;border-radius:12px;animation:appear .3s ease}.result>strong{font:800 36px Georgia,serif;color:var(--gold);display:block}.result>span{display:block;font-size:13px;color:var(--muted)}@keyframes appear{from{transform:scale(.92);opacity:.2}to{transform:scale(1);opacity:1}}.toast{position:fixed;z-index:30;bottom:18px;left:50%;transform:translateX(-50%);max-width:min(96%,500px);min-width:180px;background:#403027;color:var(--text);border:1px solid var(--gold);padding:12px;border-radius:11px;box-shadow:0 5px 30px #0008}.footer{text-align:center;color:var(--muted);font-size:12px}.empty{padding:22px;color:var(--muted);text-align:center}
+@media(max-width:720px){.columns{grid-template-columns:1fr}.hero h1{font-size:25px}.section-head h2{font-size:19px}.topright{gap:7px}.party-list{grid-template-columns:1fr 1fr}.paper{padding:15px}.hero{align-items:flex-start}}@media(max-width:390px){.party-list{grid-template-columns:1fr}.roll-grid{gap:6px}.topright{font-size:11px}.brand{font-size:21px}}
+@media(prefers-reduced-motion:reduce){.result{animation:none}*{scroll-behavior:auto!important}}
+
+</style>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0"></script>
+<script defer src="config.js"></script>
+
+</head>
+<body>
+<header class="top"><div class="topin"><a class="brand" href="./">⚔ D&D <span>Spieltisch</span></a><div class="topright"><span id="connection" role="status" aria-live="polite">Verbindung wird geprüft …</span><a href="./" class="quiet-link">Charakterbogen</a><button id="logout" class="quiet-link" hidden>Abmelden</button></div></div></header>
+<main class="shell">
+  <section id="loginPanel" class="paper login" hidden>
+    <div class="crest" aria-hidden="true">🎲</div><p class="eyebrow">Gemeinsam spielen</p><h1>Willkommen am Spieltisch</h1>
+    <p>Mit deinem bisherigen privaten Charaktercode gelangst du direkt in eure Runde. Kein neues Benutzerkonto erforderlich.</p>
+    <form id="loginForm"><label for="role">Mein Charakter</label><select id="role" required><option value="">Bitte auswählen</option><option value="len">Lennox</option><option value="gra">Grandia Rythna</option><option value="sas">Sashee</option><option value="pei">Peisinoe</option><option value="gm">Spielleiter</option></select>
+    <label for="accessCode">Privater Zugangscode</label><input type="password" id="accessCode" required autocomplete="off" placeholder="Code eingeben" maxlength="110">
+    <button class="primary" type="submit">Spieltisch betreten</button><p class="small">Jeder mit deinem Code kann deine Rolle übernehmen. Gib ihn nicht weiter.</p></form>
+  </section>
+  <div id="dashboard" hidden>
+    <section class="hero paper"><div><p class="eyebrow">Gemeinsame D&D-Runde <span class="live-dot"></span></p><h1 id="sessionTitleDisplay">Spieltisch</h1><p id="sessionMessage">Aktuelle Spielsitzung</p></div><div class="hero-right"><span class="pill" id="sessionStatus">Warten</span><span class="tiny" id="onlineText">0 / 5 Teilnehmer</span></div></section>
+    <section id="gmPanel" class="paper" hidden><div class="section-head"><h2>🛡 Spielleiter-Control-Room</h2><span class="tiny">Nur für dich</span></div>
+      <div class="control"><label for="newTitle">Name der Runde</label><input id="newTitle" maxlength="100" value="Unsere D&D-Runde" placeholder="Name der Sitzung"><div class="buttonbar"><button class="primary" data-gm="start">Neue Sitzung starten</button><button data-gm="pause">Pausieren</button><button data-gm="resume">Fortsetzen</button><button class="danger" data-gm="end">Beenden</button></div></div>
+      <details class="gm-details"><summary>Private Spielleiter-Notizen</summary><label for="gmNotes">Nur der Spielleiter kann diese Notizen lesen</label><textarea id="gmNotes" maxlength="12000" rows="5" placeholder="Geheime Hinweise, NSCs, Handlung …"></textarea><button id="saveNotes">Notizen sichern</button></details>
+    </section>
+    <div class="columns"><section class="paper"><div class="section-head"><h2>👥 Gruppe</h2><span id="partyInfo" class="tiny">Vier Charaktere</span></div><div id="party" class="party-list" aria-live="polite"></div></section>
+    <section class="paper"><div class="section-head"><h2>🎲 Gemeinsam würfeln</h2><span class="tiny">Serverseitig geprüft</span></div><form id="rollForm">
+      <label for="rollLabel">Wofür würfelst du?</label><input id="rollLabel" maxlength="100" placeholder="z. B. Heimlichkeit, Initiative …" value="Freier Wurf">
+      <div class="roll-grid"><div><label for="rollCount">Anzahl</label><input id="rollCount" type="number" min="1" max="20" value="1" required></div><div><label for="rollFaces">Würfel</label><select id="rollFaces"><option value="20">W20</option><option value="4">W4</option><option value="6">W6</option><option value="8">W8</option><option value="10">W10</option><option value="12">W12</option><option value="100">W100</option></select></div><div><label for="rollBonus">Modifikator</label><input id="rollBonus" type="number" min="-100" max="100" value="0" required></div></div>
+      <div class="roll-grid two"><div><label for="advantage">W20-Modus</label><select id="advantage"><option value="0">Normal</option><option value="1">Vorteil</option><option value="-1">Nachteil</option></select></div><div id="visibilityWrap" hidden><label for="rollVisibility">Sichtbarkeit</label><select id="rollVisibility"><option value="public">Öffentlich</option><option value="gm">Geheim (nur SL)</option></select></div></div>
+      <button type="submit" id="rollButton" class="primary wide">🎲 Würfeln & mit allen teilen</button><p class="tiny">Würfe funktionieren nur während einer aktiven Spielsitzung. Die Ergebnisse kommen direkt aus Supabase.</p>
+    </form><div id="lastResult" class="result" aria-live="polite" hidden></div></section></div>
+    <section class="paper events"><div class="section-head"><h2>📜 Gemeinsamer Würfelverlauf</h2><span class="tiny" id="rollCountText">Noch keine Würfe</span></div><div id="rolls" aria-live="polite" class="roll-list"></div></section>
+    <p class="footer">D&D Spieltisch · Kostenlose GitHub-Pages- und Supabase-Version · <a href="./">Zurück zum Charakterbogen</a></p>
+  </div>
+  <div id="notice" class="toast" role="alert" hidden></div>
+</main>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+/* D&D multiplayer tabletop — free-tier polling, all authorization inside Supabase RPC. */
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const escapeHtml = s => String(s ?? '').replace(/[&<>"']/g,c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const names = {len:'Lennox',gra:'Grandia Rythna',sas:'Sashee',pei:'Peisinoe',gm:'Spielleiter'};
+  const defaults = {len:[21,13],gra:[28,16],sas:[21,12],pei:[24,15]};
+  const storageKey='dnd_characters_cloud_v2';
+  const conf=window.DND_CLOUD_CONFIG||{};
+  if (!window.supabase?.createClient || !/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(conf.url||'') || !conf.publishableKey) {
+    $('connection').textContent='Konfiguration fehlt'; $('loginPanel').hidden=false; $('loginForm').hidden=true;return;
+  }
+  const client=window.supabase.createClient(conf.url,conf.publishableKey,{auth:{persistSession:false,autoRefreshToken:false}});
+  const state={actor:'',role:'',code:'',sessionId:'',snapshot:null,onlineSince:0,busy:false,loading:false,refreshTimer:null,heartbeatTimer:null,first:true,failures:0};
+  let noticeTimer;
+  const notice = text => {
+    const el=$('notice');el.textContent=String(text).slice(0,240);el.hidden=false;
+    clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>el.hidden=true,5000);
+  };
+  const friendly = error => {
+    const m=String(error?.message||error||'Verbindungsproblem');
+    if (/Zugangscode ungültig|invalid.*code|Unauthorized|403/i.test(m)) return 'Zugangscode ungültig oder Zugriff verweigert.';
+    if (/fetch|network|timeout/i.test(m)) return 'Keine Netzwerkverbindung zu Supabase.';
+    return m.slice(0,160);
+  };
+  const rpc=async(name,params)=>{
+    const {data,error}=await client.rpc(name,params);
+    if(error) throw error;
+    return data;
+  };
+  const isGM=()=>state.actor==='gm';
+  const sessionActive=()=>state.snapshot?.session?.status==='active';
+  function readSaved(){
+    try{
+      const x=JSON.parse(localStorage.getItem(storageKey)||'null');
+      const actor=x?.role==='gm'?'gm':x?.char;
+      if(!names[actor]||!(/^[A-Za-z0-9_-]{20,100}$/.test(x?.code||'')))return null;
+      return {actor,code:x.code};
+    }catch{return null;}
+  }
+  const remember=()=>{try{localStorage.setItem(storageKey,JSON.stringify({role:isGM()?'gm':'player',char:isGM()?'':state.actor,code:state.code}));}catch{notice('Code wird auf diesem Gerät nicht dauerhaft gespeichert.');}};
+  function showGate(){
+    $('dashboard').hidden=true;$('loginPanel').hidden=false;$('logout').hidden=true;
+    $('connection').textContent='Bitte anmelden';
+  }
+  function resetSession(){
+    clearInterval(state.refreshTimer);clearInterval(state.heartbeatTimer);
+    state.actor='';state.code='';state.role='';state.snapshot=null;state.sessionId='';state.onlineSince=0;
+    state.first=true;state.busy=false;state.loading=false;
+    showGate();
+  }
+  async function signIn(actor,code,restore=false){
+    if(!names[actor]||!(/^[A-Za-z0-9_-]{20,100}$/.test(code))) {notice('Bitte einen gültigen Code eingeben.');return;}
+    if(state.busy)return;state.busy=true;$('connection').textContent='Zugang wird geprüft …';
+    try{
+      const snap=await rpc('dnd_snapshot',{p_actor:actor,p_code:code,p_after:0});
+      if(!snap||!Array.isArray(snap.party))throw Error('Ungültige Serverantwort');
+      state.actor=actor;state.role=actor==='gm'?'gm':'player';state.code=code;
+      state.first=true;state.sessionId='';state.onlineSince=0;state.failures=0;
+      $('loginPanel').hidden=true;$('dashboard').hidden=false;$('logout').hidden=false;
+      $('gmPanel').hidden=!isGM();$('visibilityWrap').hidden=!isGM();
+      if(!isGM())$('rollVisibility').value='public';
+      remember();
+      await processSnapshot(snap);
+      await heartbeat();
+      clearInterval(state.refreshTimer);clearInterval(state.heartbeatTimer);
+      state.refreshTimer=setInterval(()=>{if(!document.hidden)refresh();},3200);
+      state.heartbeatTimer=setInterval(()=>{if(!document.hidden)heartbeat();},18000);
+      $('connection').textContent='● Online';
+    }catch(e){
+      if(restore){try{localStorage.removeItem(storageKey);}catch{};showGate();}
+      notice('Anmeldung fehlgeschlagen: '+friendly(e));$('connection').textContent='Zugang fehlgeschlagen';
+    }finally{state.busy=false; if(state.actor&&state.snapshot)render((state.snapshot.rolls||[]).slice().sort((a,b)=>Number(b.id)-Number(a.id)),state.snapshot);}
+  }
+  async function heartbeat(){
+    if(!state.actor)return;
+    try{await rpc('dnd_heartbeat',{p_actor:state.actor,p_code:state.code});}catch(e){$('connection').textContent='Verbindung gestört';}
+  }
+  function displayTime(date){
+    const d=new Date(date);return Number.isNaN(d.getTime())?'':d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+  }
+  function rollDescription(r){
+    const raw=Array.isArray(r.individual_rolls)?r.individual_rolls:[];
+    const chosen=Array.isArray(r.chosen_rolls)?r.chosen_rolls:raw;
+    const adv=r.advantage===1?' · Vorteil':r.advantage===-1?' · Nachteil':'';
+    const bonus=Number(r.modifier||0);
+    return `${String(r.formula||'')} → [${raw.join(', ')}]${bonus?' · Mod '+(bonus>0?'+':'')+bonus:''}${adv}${raw.length!==chosen.length?' · zählt '+chosen.join(', '):''}`;
+  }
+  function isCritical(r){
+    if(Number(r.faces)!==20||!Array.isArray(r.chosen_rolls)||r.chosen_rolls.length!==1)return '';
+    return r.chosen_rolls[0]===20?'crit':r.chosen_rolls[0]===1?'fail':'';
+  }
+  function showLast(r){
+    const el=$('lastResult');el.hidden=false;
+    const privateText=r.visibility==='gm'?' · nur für Spielleiter':'';
+    el.innerHTML=`<strong>${Number(r.total)||0}</strong><span>${escapeHtml(names[r.actor_key]||r.actor_key)} · ${escapeHtml(r.label)}${privateText}</span><span>${escapeHtml(rollDescription(r))}</span>`;
+    el.className='result '+isCritical(r);
+    // Restart a purely decorative animation; the signed-in backend generated the result.
+    void el.offsetWidth;
+  }
+  async function processSnapshot(snap){
+    if(!snap||!snap.session||!Array.isArray(snap.rolls))throw Error('Ungültige Serverantwort');
+    const previous=state.snapshot;
+    const prevMax=state.onlineSince;
+    const newSession=state.sessionId!==snap.session.id;
+    state.snapshot=snap;state.sessionId=snap.session.id;
+    const rolls=snap.rolls.slice().sort((a,b)=>Number(b.id)-Number(a.id));
+    const maxId=rolls.length?Math.max(...rolls.map(r=>Number(r.id))):0;
+    const canNotify=!state.first&&!newSession;
+    if(canNotify){
+      const fresh=rolls.filter(r=>Number(r.id)>prevMax);
+      if(fresh.length){showLast(fresh[0]);if(fresh[0].actor_key!==state.actor)notice(`${names[fresh[0].actor_key]||'Spielleiter'} hat ${fresh[0].label} gewürfelt: ${fresh[0].total}`);}
+    }
+    state.onlineSince=Math.max(maxId,Number(snap.latest_id)||0);
+    state.first=false;
+    render(rolls,previous);
+  }
+  async function refresh(){
+    if(!state.actor||state.loading||state.busy)return;
+    state.loading=true;
+    try{
+      const data=await rpc('dnd_snapshot',{p_actor:state.actor,p_code:state.code,p_after:0});
+      await processSnapshot(data);state.failures=0;
+      $('connection').textContent='● Online';
+    }catch(e){
+      state.failures++;
+      $('connection').textContent=state.failures>1?'● Offline / Wiederverbindung':'Verbindung gestört';
+      if(state.failures===2)notice(friendly(e)+' Automatischer Neuversuch läuft.');
+    }finally{state.loading=false;}
+  }
+  function render(rolls,previous){
+    const snap=state.snapshot, session=snap.session||{},party=Array.isArray(snap.party)?snap.party:[];
+    const online=new Set((snap.online||[]).map(x=>x.key));
+    $('sessionTitleDisplay').textContent=session.title||'D&D-Spieltisch';
+    const labels={waiting:'Noch keine Sitzung',active:'Sitzung aktiv',paused:'Sitzung pausiert',ended:'Sitzung beendet'};
+    $('sessionStatus').textContent=labels[session.status]||'Unbekannt';
+    $('sessionMessage').textContent=session.status==='active'?'Alle öffentlichen Würfe erscheinen automatisch in der Runde.':session.status==='paused'?'Der Spielleiter hat die Würfe pausiert.':'Der Spielleiter kann hier eine neue Runde starten.';
+    $('onlineText').textContent=`${online.size} / 5 Teilnehmer online`;
+    $('partyInfo').textContent=`${party.length} Charaktere`;
+    $('party').innerHTML=party.map(p=>{
+      const fallback=defaults[p.key]||[20,10];
+      const max=Math.max(1,Math.min(9999,Number(p.hpMax??fallback[0])||fallback[0]));
+      const hp=Math.max(0,Math.min(9999,Number(p.hp??fallback[0])||0));
+      const temp=Math.max(0,Math.min(9999,Number(p.tmp)||0));
+      const ac=Number(p.ac??fallback[1])||fallback[1];
+      const percent=Math.max(0,Math.min(100,Math.round(hp/max*100)));
+      const isOnline=online.has(p.key);
+      return `<article class="party-card"><div class="pc-top"><strong>${escapeHtml(p.name||names[p.key]||'Charakter')}</strong><span class="${isOnline?'online':'offline'}">● ${isOnline?'Online':'Offline'}</span></div>
+        <div class="pc-class">${escapeHtml(p.class||'')}${p.level?' · Stufe '+escapeHtml(p.level):''}</div><div class="hp-track"><span style="width:${percent}%"></span></div>
+        <div class="pc-bottom"><span>${hp}/${max} TP${temp?' (+'+temp+' temp)':''}</span><span>RK ${Number.isFinite(ac)?ac:'–'}</span></div></article>`;
+    }).join('')||'<div class="empty">Keine Charaktere gefunden.</div>';
+    const nameFor=k=>names[k]||k;
+    $('rolls').innerHTML=rolls.length?rolls.map(r=>`<article class="roll-entry ${isCritical(r)} ${r.visibility==='gm'?'secret':''}">
+        <div><strong>${escapeHtml(nameFor(r.actor_key))} · ${escapeHtml(r.label)}</strong>
+        <div class="detail">${escapeHtml(rollDescription(r))}${r.visibility==='gm'?' · 🔒 Geheim':''}</div><div class="detail">${escapeHtml(displayTime(r.created_at))}</div></div>
+        <div class="number" aria-label="Ergebnis ${Number(r.total)||0}">${Number(r.total)||0}</div></article>`).join(''):
+      '<div class="empty">Noch keine Würfe in dieser Sitzung. Starte mit dem ersten W20!</div>';
+    $('rollCountText').textContent=rolls.length?`${rolls.length} letzte Ergebnisse`:'Noch keine Würfe';
+    $('rollButton').disabled=session.status!=='active'||state.busy;
+    $('rollButton').textContent=session.status==='active'?'🎲 Würfeln & mit allen teilen':'Würfeln erst bei aktiver Sitzung';
+    $('gmPanel').hidden=!isGM();
+    if(isGM()){
+      document.querySelectorAll('[data-gm]').forEach(b=>{
+        const a=b.dataset.gm;
+        b.disabled=state.busy||(a==='start'&&['active','paused'].includes(session.status))||(a==='pause'&&session.status!=='active')||(a==='resume'&&session.status!=='paused')||(a==='end'&&!['active','paused'].includes(session.status));
+      });
+      if(!previous || previous.session.id!==session.id){$('gmNotes').value=snap.gm_notes||'';}
+    }
+  }
+  async function roll(ev){
+    ev.preventDefault();if(state.busy)return;
+    if(!sessionActive()){notice('Der Spielleiter muss die Sitzung zunächst starten.');return;}
+    const count=Number($('rollCount').value),faces=Number($('rollFaces').value),mod=Number($('rollBonus').value),adv=Number($('advantage').value);
+    if(!Number.isInteger(count)||count<1||count>20||![4,6,8,10,12,20,100].includes(faces)||!Number.isInteger(mod)||Math.abs(mod)>100){notice('Bitte gültige Würfelwerte eingeben.');return;}
+    if(adv!==0&&(count!==1||faces!==20)){notice('Vorteil/Nachteil gilt nur für einen einzelnen W20.');return;}
+    const label=($('rollLabel').value||'Wurf').trim().slice(0,100);
+    const formula=`${count}d${faces}${mod?(mod>0?'+':'')+mod:''}`;
+    state.busy=true;$('rollButton').disabled=true;
+    try{
+      const data=await rpc('dnd_roll',{p_actor:state.actor,p_code:state.code,p_formula:formula,p_label:label||'Wurf',p_visibility:isGM()?$('rollVisibility').value:'public',p_request_id:crypto.randomUUID(),p_adv:adv});
+      showLast(data);await refreshAfterAction();
+    }catch(e){notice('Wurf fehlgeschlagen: '+friendly(e));}
+    finally{state.busy=false;$('rollButton').disabled=!sessionActive();}
+  }
+  async function refreshAfterAction(){
+    // Bypass the normal busy guard for immediate feedback after a user action.
+    const data=await rpc('dnd_snapshot',{p_actor:state.actor,p_code:state.code,p_after:0});
+    await processSnapshot(data);
+  }
+  async function gmAction(action){
+    if(!isGM()||state.busy)return;
+    if(action==='end'&&!confirm('Die aktuelle Sitzung wirklich beenden?'))return;
+    state.busy=true;
+    try{
+      await rpc('dnd_gm_manage',{p_code:state.code,p_action:action,p_title:action==='start'?$('newTitle').value.trim():null,p_notes:null});
+      await refreshAfterAction();notice(action==='start'?'Sitzung gestartet':action==='end'?'Sitzung beendet':action==='pause'?'Sitzung pausiert':'Sitzung fortgesetzt');
+    }catch(e){notice('Aktion fehlgeschlagen: '+friendly(e));}
+    finally{state.busy=false;render((state.snapshot?.rolls||[]).slice().sort((a,b)=>Number(b.id)-Number(a.id)),state.snapshot);}
+  }
+  async function saveNotes(){
+    if(!isGM()||state.busy)return;state.busy=true;
+    try{await rpc('dnd_gm_manage',{p_code:state.code,p_action:'notes',p_title:null,p_notes:$('gmNotes').value});notice('Private Notizen gespeichert.');}
+    catch(e){notice('Notizen nicht gespeichert: '+friendly(e));}
+    finally{state.busy=false;}
+  }
+  $('loginForm').addEventListener('submit',ev=>{ev.preventDefault();signIn($('role').value,$('accessCode').value.trim());});
+  $('rollForm').addEventListener('submit',roll);
+  document.querySelectorAll('[data-gm]').forEach(b=>b.addEventListener('click',()=>gmAction(b.dataset.gm)));
+  $('saveNotes').addEventListener('click',saveNotes);
+  $('logout').addEventListener('click',()=>{try{localStorage.removeItem(storageKey)}catch{}resetSession();});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&state.actor){heartbeat();refresh();}});
+  const saved=readSaved();
+  if(saved)signIn(saved.actor,saved.code,true);
+  else showGate();
+})();
+
+});
+</script>
+</body>
+</html>

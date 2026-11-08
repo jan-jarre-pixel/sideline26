@@ -158,7 +158,7 @@ function save(id){
   try{if(db){await db.doc("sheets/"+id).set(clone(S[id]));setSt(isDM?"Gespeichert":"Live gespeichert")}else{localStorage.setItem("i_"+id,JSON.stringify(S[id]));setSt("Nur lokal gespeichert")}}
   catch(e){setSt("Speichern nicht erlaubt – Contributor-Rechte nötig.")}
   if(timers[id]===t)delete dirty[id]},350)}
-function rl(f,label){const m=/^\s*(\d*)d(\d+)\s*(?:([+-])\s*(\d+))?\s*$/i.exec(f);if(!m)return;
+function rl(f,label){if(window.DND_ONLINE_ROLL){window.DND_ONLINE_ROLL(f,label);return;}const m=/^\s*(\d*)d(\d+)\s*(?:([+-])\s*(\d+))?\s*$/i.exec(f);if(!m)return;
  const n=+m[1]||1,sd=+m[2],mo=m[3]?(m[3]=="-"?-1:1)*(+m[4]):0,R=()=>1+Math.floor(Math.random()*sd);
  let r=[];for(let i=0;i<n;i++)r.push(R());let ex="";
  if(sd==20&&n==1&&advm){const b=R();ex=` (${advm>0?"Vorteil":"Nachteil"}: ${r[0]}, ${b})`;r=[advm>0?Math.max(r[0],b):Math.min(r[0],b)]}
@@ -272,5 +272,54 @@ start();
 <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0"></script>
 <script defer src="config.js"></script>
 <script defer src="online.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+/* Uses the existing character-sheet dice buttons, but delegates the actual dice roll
+   to a trusted Supabase RPC while a player or GM is signed in. */
+(() => {
+  'use strict';
+  const cfg=window.DND_CLOUD_CONFIG||{};
+  if (!window.supabase?.createClient||!cfg.url||!cfg.publishableKey)return;
+  const api=window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:false,autoRefreshToken:false}});
+  let pending=false;
+  const status=message=>{try{setSt(message);tst(message);}catch{}};
+  window.DND_ONLINE_ROLL=async (formula,label)=>{
+    if(pending)return;
+    let saved;
+    try{saved=JSON.parse(localStorage.getItem('dnd_characters_cloud_v2')||'null');}catch{}
+    const actor=saved?.role==='gm'?'gm':saved?.char;
+    if(!['len','gra','sas','pei','gm'].includes(actor)||typeof saved?.code!=='string'){
+      status('Bitte zuerst mit deinem privaten Code anmelden.');return;
+    }
+    const f=String(formula||'').replace(/\s/g,'').toLowerCase();
+    const name=String(label||'Freier Wurf').slice(0,100);
+    const advantage=(/^1?d20(?:[+-]\d+)?$/.test(f)&&typeof advm!=='undefined')?Number(advm)||0:0;
+    pending=true;status('Wurf wird sicher auf dem Server erzeugt …');
+    try{
+      const {data,error}=await api.rpc('dnd_roll',{
+        p_actor:actor,p_code:saved.code,p_formula:f,p_label:name||'Freier Wurf',
+        p_visibility:'public',p_request_id:crypto.randomUUID(),p_adv:advantage
+      });
+      if(error)throw error;
+      const raw=Array.isArray(data.individual_rolls)?data.individual_rolls:[];
+      const chosen=Array.isArray(data.chosen_rolls)?data.chosen_rolls:raw;
+      const faces=Number(data.faces)||20,bonus=Number(data.modifier)||0,total=Number(data.total)||0;
+      const resultType=faces===20&&chosen.length===1?(chosen[0]===20?' ★ Krit!':chosen[0]===1?' ✖ Patzer':''):'';
+      const details=`${name}: ${data.formula} → [${raw.join(', ')}]${bonus?' ('+(bonus>0?'+':'')+bonus+')':''} = ${total}${resultType}`;
+      hist.unshift(details);hist.length=Math.min(hist.length,10);
+      const log=document.getElementById('dlog');
+      if(log)log.innerHTML=hist.map(x=>`<div>${esc(x)}</div>`).join('');
+      anim(total,faces,details,resultType);
+      setSt('Wurf für alle Spieler gespeichert ✓');
+    }catch(e){
+      const message=String(e?.message||'Unbekannter Fehler');
+      status(/Sitzung starten|Spielleiter muss Sitzung starten/.test(message)?'Noch keine aktive Spielsitzung. Bitte den Spielleiter starten lassen.':
+        'Live-Wurf fehlgeschlagen: '+message.slice(0,120));
+    }finally{pending=false;}
+  };
+})();
+
+});
+</script>
 </body>
 </html>
