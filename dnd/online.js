@@ -97,7 +97,7 @@
     a.style.display='block';
     a.innerHTML=`<div class="row" style="justify-content:space-between">
        <span class="note">${state.role==='gm'?'Spielleiter · alle Charaktere (nur lesen)':`${esc(D[state.char].name)} · automatisch online gespeichert`}</span>
-       <button class="b" onclick="cloudLogout()">Abmelden</button></div>`;
+       <a class="b" href="spieltisch.html" style="text-decoration:none">🎲 Live-Spieltisch</a> <button class="b" onclick="cloudLogout()">Abmelden</button></div>`;
   }
   overview = function () {
     return original.overview().replace(
