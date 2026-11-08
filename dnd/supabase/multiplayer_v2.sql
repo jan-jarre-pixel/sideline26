@@ -39,7 +39,7 @@ revoke all on public.dnd_room,public.dnd_rolls,public.dnd_presence from public,a
 revoke all on sequence public.dnd_rolls_id_seq from public,anon,authenticated;
 create or replace function game_private.dnd_code_ok(p_actor text,p_code text)
 returns boolean language sql stable security definer set search_path='' as $$
- select p_actor in ('len','gra','sas','pei','gm')
+ select coalesce(p_actor in ('len','gra','sas','pei','gm')
    and p_code ~ '^[A-Za-z0-9_-]{20,100}$'
    and (
      (p_actor='gm' and exists (
@@ -49,8 +49,8 @@ returns boolean language sql stable security definer set search_path='' as $$
      (p_actor<>'gm' and exists (
        select 1 from game_private.invites i
        where i.char_key=p_actor and i.claim_hash=pg_catalog.encode(extensions.digest(p_code,'sha256'),'hex')))
-   );
-$$;
+   ),false);
+$;
 revoke all on function game_private.dnd_code_ok(text,text) from public,anon,authenticated;
 create or replace function public.dnd_snapshot(p_actor text,p_code text,p_after bigint default 0)
 returns jsonb language plpgsql security definer set search_path='' as $$
@@ -147,7 +147,7 @@ begin
  v_modifier:=coalesce(v_match[3],'0')::int;
  if v_n<1 or v_n>20 or v_modifier < -100 or v_modifier > 100
     then raise exception 'Würfelgrenzen überschritten'; end if;
- if p_adv not in (-1,0,1) or (p_adv<>0 and (v_n<>1 or v_faces<>20))
+ if p_adv is null or p_adv not in (-1,0,1) or (p_adv<>0 and (v_n<>1 or v_faces<>20))
     then raise exception 'Vorteil/Nachteil nur bei einem W20'; end if;
  select * into v_room from public.dnd_room where id=1;
  if v_room.status<>'active' then raise exception 'Spielleiter muss Sitzung starten'; end if;
@@ -159,22 +159,8 @@ begin
    return to_jsonb(v_existing);
  end if;
  v_limit:=4294967296::bigint-(4294967296::bigint % v_faces);
+ -- Generate a uniform unsigned 32-bit integer with rejection sampling.
  for v_i in 1..(case when p_adv=0 then v_n else 2 end) loop
-   loop
-     v_bytes:=extensions.gen_random_bytes(4);
-     v_raw:=0;
-     exit when false;
-   end loop;
- end loop;
- -- Use bigint to avoid signed 32-bit overflow.
- v_raw_rolls:='{}';
- for v_i in 1..(case when p_adv=0 then v_n else 2 end) loop
-   loop
-     v_bytes:=extensions.gen_random_bytes(4);
-     v_raw:=0;
-     exit;
-   end loop;
-   -- Generate a uniform unsigned 32-bit integer with rejection sampling.
    loop
      v_bytes:=extensions.gen_random_bytes(4);
      if (get_byte(v_bytes,0)::bigint*16777216+
