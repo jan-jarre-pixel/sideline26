@@ -50,7 +50,7 @@ returns boolean language sql stable security definer set search_path='' as $$
        select 1 from game_private.invites i
        where i.char_key=p_actor and i.claim_hash=pg_catalog.encode(extensions.digest(p_code,'sha256'),'hex')))
    ),false);
-$;
+$$;
 revoke all on function game_private.dnd_code_ok(text,text) from public,anon,authenticated;
 create or replace function public.dnd_snapshot(p_actor text,p_code text,p_after bigint default 0)
 returns jsonb language plpgsql security definer set search_path='' as $$
